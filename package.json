@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./test/* --exit"
+    "test": "mocha ./test/* --exit",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,8 @@
   },
   "homepage": "https://github.com/Masanam24/githubAction#readme",
   "dependencies": {
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
     "express": "^4.17.3"
   },
   "devDependencies": {
