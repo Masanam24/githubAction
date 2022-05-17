@@ -28,7 +28,7 @@ jobs:
     - run: npm test
   # These are the changes you need to add
   deploy:
-    needs: build
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
