@@ -23,6 +23,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up Cloud SDK
+        uses: Masanam24githubAction@main
         with:
           project_id: factoree-beta
           service_account_key: ${{ secrets.GCP_SA_KEY }}
@@ -30,6 +31,7 @@ jobs:
 
       - id: Deploy
         name: Deploy to App Engine
+        uses: Masanam24githubAction@main
         with:
           project_id: factoree-beta
 
