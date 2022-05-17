@@ -43,12 +43,10 @@ jobs:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0
 
-    - name: Use Node.js 14
-      uses: actions/setup-node@v2
+    - uses: actions/setup-node@v1
       with:
         node-version: 14
-    - name: Install dependencies
-    - run: npm ci
+    - run: npm install
     - run: npm test
     - run: gcloud config set account choirul.anam@auk.industries
     - run: gcloud app deploy app.yaml --quiet --no-promote --version v1
