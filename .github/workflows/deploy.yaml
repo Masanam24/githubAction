@@ -25,8 +25,29 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT }}
 
 jobs:
-  setup-build-publish-deploy:
-    name: Setup, Build, Publish, and Deploy
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
+
+
+  deploy: ## <-- this is the new stuff
+    name: Deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -43,10 +64,5 @@ jobs:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0
 
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 14
-    - run: npm install
-    - run: npm test
-    - run: gcloud config set account choirul.anam@auk.industries
+    - name: Deploy App Engine
     - run: gcloud app deploy app.yaml --quiet --no-promote --version v1
