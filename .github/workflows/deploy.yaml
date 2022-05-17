@@ -23,7 +23,6 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
         with:
           project_id: factoree-beta
           service_account_key: ${{ secrets.GCP_SA_KEY }}
@@ -31,7 +30,6 @@ jobs:
 
       - id: Deploy
         name: Deploy to App Engine
-        uses: google-github-actions/deploy-appengine@main
         with:
           project_id: factoree-beta
 
