@@ -12,17 +12,67 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# name: Build and Deploy to Google Compute Engine
+
+# on:
+#   # Triggers the workflow on push or pull request events but only for the master branch
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
+
+# env:
+#   PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     strategy:
+#       matrix:
+#         node-version: [14.x, 16.x]
+
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v3
+
+#     - name: Use Node.js ${{ matrix.node-version }}
+#       uses: actions/setup-node@v2
+#       with:
+#         node-version: ${{ matrix.node-version }}
+#     - run: npm ci
+#     - run: npm run build --if-present
+#     - run: npm test
+
+
+#   deploy: ## <-- this is the new stuff
+#     needs: build
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v3
+
+#     # Authentication via credentials json
+#     - name: Auth
+#       uses: google-github-actions/auth@v0
+#       with:
+#         credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+#     # Setup gcloud CLI
+#     - name: Set up Cloud SDK
+#       uses: google-github-actions/setup-gcloud@v0
+
+#     - name: Deploy App Engine
+#     - run: gcloud app deploy app.yaml --quiet --no-promote --version v1
+
+
 name: Build and Deploy to Google Compute Engine
 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
 
 jobs:
   build:
@@ -31,36 +81,34 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x, 16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
+    - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-
-
-  deploy: ## <-- this is the new stuff
+  # These are the changes you need to add
+  deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-    # Authentication via credentials json
-    - name: Auth
-      uses: google-github-actions/auth@v0
-      with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+     # Authentication via credentials json
+      - name: Auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
     # Setup gcloud CLI
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v0
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
 
-    - name: Deploy App Engine
-    - run: gcloud app deploy app.yaml --quiet --no-promote --version v1
+      - name: Deploy App Engine
+      - run: gcloud app deploy app.yaml --quiet --no-promote --version v1
