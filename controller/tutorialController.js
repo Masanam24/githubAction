@@ -25,7 +25,7 @@ exports.postEditTutorial = (req, res, next) => {
         published
     );
     updatedTutorial.save();
-    res.status(200).json({ message: id ? 'Tutorial Updated Successfully' : 'Tutorial Added Successfully' })
+    res.status(200).json({ message: id ? 'Tutorial Updated' : 'Tutorial Added Successfully' })
 };
 
 exports.DeleteTutorials = (req, res, next) => {
